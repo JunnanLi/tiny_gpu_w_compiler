@@ -46,6 +46,18 @@ module scheduler #(
         UPDATE = 3'b110,      // Update registers, NZP, and PC
         DONE = 3'b111;        // Done executing this block
     
+    // Wait for all LSUs to finish their request before continuing
+    reg any_lsu_waiting;
+    always_comb begin
+        any_lsu_waiting = 1'b0;
+        for (integer i = 0; i < THREADS_PER_BLOCK; i++) begin
+            // Make sure no lsu_state = REQUESTING or WAITING
+            if (lsu_state[i] == 2'b01 || lsu_state[i] == 2'b10) begin
+                any_lsu_waiting = any_lsu_waiting | 1'b1;
+            end
+        end
+    end
+
     always @(posedge clk) begin 
         if (reset) begin
             current_pc <= 0;
@@ -75,15 +87,7 @@ module scheduler #(
                     core_state <= WAIT;
                 end
                 WAIT: begin
-                    // Wait for all LSUs to finish their request before continuing
-                    reg any_lsu_waiting = 1'b0;
-                    for (int i = 0; i < THREADS_PER_BLOCK; i++) begin
-                        // Make sure no lsu_state = REQUESTING or WAITING
-                        if (lsu_state[i] == 2'b01 || lsu_state[i] == 2'b10) begin
-                            any_lsu_waiting = 1'b1;
-                            break;
-                        end
-                    end
+                    
 
                     // If no LSU is waiting for a response, move onto the next stage
                     if (!any_lsu_waiting) begin
