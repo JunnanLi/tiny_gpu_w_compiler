@@ -1,0 +1,26 @@
+*design* DebussyLib (btIdent Verdi_O-2018.09-SP2)
+Command arguments:
+    +define+verilog
+    -sverilog
+    +v2k
+    -f file_list.f
+        ../src/alu.sv
+        ../src/controller.sv
+        ../src/core.sv
+        ../src/dcr.sv
+        ../src/decoder.sv
+        ../src/dispatch.sv
+        ../src/fetcher.sv
+        ../src/gpu.sv
+        ../src/lsu.sv
+        ../src/pc.sv
+        ../src/registers.sv
+        ../src/scheduler.sv
+        testbench.sv
+    -top
+    Testbench_wrapper
+
+Highest level modules:
+Testbench_wrapper
+
+Total	0 error(s),   0 warning(s)
